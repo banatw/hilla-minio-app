@@ -1,12 +1,12 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js'
 import { useForm } from '@vaadin/hilla-react-form'
 import { useSignal } from '@vaadin/hilla-react-signals'
-import { Button, FormLayout, Notification, TextField, Upload, UploadBeforeEvent } from '@vaadin/react-components'
+import { Button, FormLayout, Notification, TextField, Upload, UploadBeforeEvent, VerticalLayout } from '@vaadin/react-components'
 import ArsipModel from 'Frontend/generated/com/example/application/data/ArsipModel'
 import { ArsipService } from 'Frontend/generated/endpoints'
 import { readAsDataURL } from 'promise-file-reader'
 import React, { useEffect } from 'react'
-import { useNavigate, useNavigation, useParams } from 'react-router'
+import { NavLink, useNavigate, useNavigation, useParams } from 'react-router'
 
 const config: ViewConfig = {
     menu:{
@@ -42,7 +42,7 @@ export default function EmployeeEdit() {
   },[])
 
   return (
-    <FormLayout>
+    <FormLayout style={{width: '100%'}} >
         <TextField {...form.field(form.model.name)} label={'Name'}  />
         <Upload  
             maxFiles={1}
@@ -61,6 +61,8 @@ export default function EmployeeEdit() {
         />
         <iframe src={filePrev.value} width={'300px'} height={'300px'}></iframe>
         <Button onClick={form.submit} disabled={form.invalid}>Simpan</Button>
+        <NavLink to={`/arsip`}>Kembali</NavLink>
+        
     </FormLayout>
   )
 }

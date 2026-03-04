@@ -6,7 +6,7 @@ import ArsipModel from 'Frontend/generated/com/example/application/data/ArsipMod
 import { ArsipService } from 'Frontend/generated/endpoints'
 import { readAsDataURL } from 'promise-file-reader'
 import  { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 
 export const config: ViewConfig = {
     menu:{
@@ -38,7 +38,7 @@ export default function EmployeeAdd() {
   
 
   return (
-    <FormLayout>
+    <FormLayout style={{width: '100%'}} >
         <TextField {...form.field(form.model.name)} label={'Name'}  />
         <Upload  
           accept='application/pdf'
@@ -60,6 +60,7 @@ export default function EmployeeAdd() {
         />
         <iframe src={filePrev.value} width={'300px'} height={'300px'}></iframe>
         <Button onClick={form.submit} >Simpan</Button>
+        <NavLink to={`/arsip`}>Kembali</NavLink>
     </FormLayout>
   )
 }
