@@ -13,8 +13,55 @@ export const config: ViewConfig = {
     rolesAllowed: ['ADMIN'],
 }
 
+// const tourOptions = {
+//       defaultStepOptions: {
+//         cancelIcon: {
+//           enabled: true
+//         }
+//       },
+//       useModalOverlay: true,
+//     };
+
+ const steps = [
+  {
+    selector: "[data-tour='add']",
+    content: (
+      <p>
+        Klik disini untuk menambah arsip
+      </p>
+    ),
+    
+  },
+  {
+    selector: "[data-tour='action']",
+    content: (
+      <p>
+        Klik disini untuk edit atau menghapus arsip
+      </p>
+    )
+  },
+   {
+    selector: "[data-tour='burger']",
+    content: (
+      <p>
+        Klik disini untuk menampilkan menu
+      </p>
+    )
+  }
+];
+
+function ButtonTour() {
+    return(
+      
+      <Button onClick={()=>{
+      }}>Start tour</Button>
+    )
+  }
+
+
 export default function EmployeeIndex() {
   const autoGridRef = React.useRef<AutoGridRef>(null);
+
 
   const navigate = useNavigate()
   function actionRenderer({item: arsip} : {item: Arsip}) {
@@ -29,7 +76,7 @@ export default function EmployeeIndex() {
             
       //     }}  >Delete</Button>
       // </HorizontalLayout>
-      <MenuBar items={[{text: 'Edit'},{text: 'Delete'}]}
+      <MenuBar items={[{text: 'Edit'},{text: 'Delete'}]} data-tour='action'
           onItemSelected={(event) => {
             const action = event.detail.value.text
             if(action.toLowerCase() === 'edit') {
@@ -47,18 +94,19 @@ export default function EmployeeIndex() {
   }
 
   return (
-    <VerticalLayout className='h-full'>
+    <VerticalLayout className='h-full' data-tour='burger'>
         <Button onClick={()=>{
           navigate('/arsip/add')
-        }}>Add</Button>
-        <AutoGrid service={ArsipService} model={ArsipModel} ref={autoGridRef}
+        }} data-tour='add'>Add</Button>
+        <AutoGrid service={ArsipService} model={ArsipModel} ref={autoGridRef} data-tour='arsip'
           hiddenColumns={['file','mimeType','s3FileName']}
           customColumns={[
-              <GridColumn key={'action'} renderer={actionRenderer} header='Action' />
+              <GridColumn key={'action'} renderer={actionRenderer} header='Action'  />
           ]}
         
         >
         </AutoGrid>
+          <ButtonTour />
     </VerticalLayout>
   )
 }

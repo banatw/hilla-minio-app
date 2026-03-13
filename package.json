@@ -26,7 +26,8 @@
     "promise-file-reader": "^1.0.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-router": "7.12.0"
+    "react-router": "7.12.0",
+    "react-shepherd": "^7.0.4"
   },
   "devDependencies": {
     "@babel/preset-react": "7.28.5",
@@ -115,7 +116,7 @@
       "vite-plugin-checker": "0.12.0",
       "workbox-build": "7.4.0"
     },
-    "hash": "643bd3f496549d499f9325b722fd55711cae363d4618638f9a8cda9a5e98f998"
+    "hash": "2455cdd1048eaac2be7b5ee46bca18b118b63436a64af6292bcd09f0de34948f"
   },
   "overrides": {
     "@vaadin/vaadin-development-mode-detector": "$@vaadin/vaadin-development-mode-detector",
@@ -207,6 +208,7 @@
     "@vaadin/grid-pro": "25.0.4",
     "@vaadin/map": "25.0.4",
     "@vaadin/rich-text-editor": "25.0.4",
-    "promise-file-reader": "$promise-file-reader"
+    "promise-file-reader": "$promise-file-reader",
+    "react-shepherd": "$react-shepherd"
   }
 }

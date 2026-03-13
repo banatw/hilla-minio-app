@@ -27,7 +27,7 @@ export default function EmployeeAdd() {
     }
 
     return (
-      <VerticalLayout>
+      <VerticalLayout data-tour='upload'>
           <Upload maxFiles={1} onUploadRequest={handleUploadRequest} />
       </VerticalLayout>
     )
