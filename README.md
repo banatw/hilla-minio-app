@@ -49,3 +49,11 @@ source directory, contains the server-side Java views</td></tr>
 - Read the documentation at [hilla.dev/docs](https://hilla.dev/docs/).
 - Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Forum](https://vaadin.com/forum).
 - Report issues, create pull requests in [GitHub](https://github.com/vaadin/hilla).
+
+  mkdir -p config/local/
+
+echo "
+# Contains secrets that shouldn't go into the repository
+config/local/" >> .gitignore
+
+echo "my.app.auth.secret=$(openssl rand -base64 32)" > config/local/application.properties
