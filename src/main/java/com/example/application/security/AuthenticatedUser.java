@@ -6,16 +6,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 
 
-import java.text.ParseException;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.*;
-import org.springframework.security.config.annotation.web.oauth2.resourceserver.JwtDsl;
 
 @Component
 public class AuthenticatedUser {

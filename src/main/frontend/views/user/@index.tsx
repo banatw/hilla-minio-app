@@ -18,19 +18,22 @@ export const config: ViewConfig = {
 interface MyProps {
     modalOpen : Signal<boolean>
     user: User[]
+    refreshGrid: ()=>void
 }
 
-function MyUserEdit ({modalOpen, user} : MyProps) {
+function MyUserEdit ({modalOpen, user, refreshGrid} : MyProps) {
     const { read, field, model,submit } = useForm(UserModel,{
         onSubmit: async (usersave)=> {
                  const id : number | undefined = user.at(0)?.id
                  if(id) {
                     await UserService.save(usersave).then((result)=>{
+                    refreshGrid()
                     modalOpen.value = false
                 })
                  }
                 else {
                     await UserService.saveAdd(usersave).then((result)=>{
+                    refreshGrid()
                     modalOpen.value = false
                     })
                 }
@@ -55,7 +58,6 @@ function MyUserEdit ({modalOpen, user} : MyProps) {
 
     return(
     <Dialog
-        modeless
         headerTitle={'User Edit'}
         opened = {modalOpen.value}
        
@@ -99,6 +101,10 @@ export default function UserIndex() {
         ,[searchTerm.value]
     )
 
+    const refreshGrid = ()=>{
+        dataProvider.refresh()
+    }
+
     function actionRenderer({item} : {item: User}) {
     return(
       
@@ -116,7 +122,7 @@ export default function UserIndex() {
             if(action.toLowerCase() === 'delete') {
                 if(confirm('are u sure?')) {
                     UserService.delete(user.id)
-                    dataProvider.refresh()
+                    refreshGrid()
                 }
                
             }
@@ -147,7 +153,7 @@ export default function UserIndex() {
                 modalOpen.value=true
                 }} data-tour='add'>Add</Button>
                 <Button onClick={()=>{
-                    dataProvider.refresh()
+                    refreshGrid()
                 }}>Refresh</Button>
             </HorizontalLayout>
         
@@ -161,7 +167,7 @@ export default function UserIndex() {
             <GridColumn key={'action'} renderer={actionRenderer} header='Action'  />
             <span slot="empty-state">No user found.</span>
         </Grid>
-        {selectedItems.value && <MyUserEdit modalOpen={modalOpen} user={selectedItems.value}  />  }
+        {selectedItems.value && <MyUserEdit modalOpen={modalOpen} user={selectedItems.value} refreshGrid={refreshGrid} />  }
     </VerticalLayout>
     )
 }

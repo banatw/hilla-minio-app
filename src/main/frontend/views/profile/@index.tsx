@@ -33,10 +33,10 @@ interface ChildProps {
   modalOpen: Signal<boolean>
   image: Signal<string | undefined>
   imageResult : Signal<string | undefined>
-  cropHasDone : Signal<boolean>
+  // cropHasDone : Signal<boolean>
 }
 
-const CropperModal = ({ modalOpen ,image, imageResult,cropHasDone } : ChildProps)=>{
+const CropperModal = ({ modalOpen ,image, imageResult } : ChildProps)=>{
   const cropperRef = React.useRef<CropperRef>(null);
 
   const onCrop = () => {
@@ -45,7 +45,7 @@ const CropperModal = ({ modalOpen ,image, imageResult,cropHasDone } : ChildProps
       const canvas = cropper.getCanvas();
       if (canvas) {
         imageResult.value = canvas.toDataURL()
-        cropHasDone.value=true
+        // cropHasDone.value=true
         modalOpen.value=false
       }
     }
@@ -95,7 +95,9 @@ export default function UserProfile() {
     })
 
    const uploadRef = React.useRef<UploadElement>(null);
-   const cropHasDone = useSignal<boolean>(false)
+  //  const cropHasDone = useSignal<boolean>(false)
+
+  
 
    useEffect(()=>{
     const fetchData = async ()=>{
@@ -112,6 +114,8 @@ export default function UserProfile() {
      const image = useSignal<string | undefined>(undefined)
      const imageResult = useSignal<string | undefined>(undefined)
      const modalOpen = useSignal<boolean>(false)
+
+     
     
     // const cropperRef = React.useRef<CropperRef>(null);
 
@@ -169,7 +173,7 @@ export default function UserProfile() {
           />
         </div>
         
-        <CropperModal modalOpen={modalOpen} image={image} imageResult={imageResult} cropHasDone={cropHasDone}  />
+        <CropperModal modalOpen={modalOpen} image={image} imageResult={imageResult}   />
         <Button onClick={form.submit} disabled={form.submitting}>Simpan</Button>
     </FormLayout>
   )

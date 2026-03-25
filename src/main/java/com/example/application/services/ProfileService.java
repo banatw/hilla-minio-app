@@ -39,7 +39,7 @@ public class ProfileService {
         User oldUser = userService.get(user.getId()).get();
         String fileName = null;
         if(user.isHasProfilePicture()) {
-            if(oldUser.getS3FileName().equals(""))  fileName = UUID.randomUUID().toString();
+            if(oldUser.getS3FileName().equals("") )  fileName = UUID.randomUUID().toString();
             else fileName = oldUser.getS3FileName();
             user.setS3FileName(fileName);
             if(oldUser.getProfilePictureUriData().equals(user.getProfilePictureUriData())) {
