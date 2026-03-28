@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useForm } from "@vaadin/hilla-react-form";
 import UserModel from "Frontend/generated/com/example/application/data/UserModel";
+import UserAction from "./_UserAction";
 
 export const config: ViewConfig = {
     menu: { order: 1, icon: 'line-awesome/svg/user-solid.svg' },
@@ -21,80 +22,13 @@ interface MyProps {
     refreshGrid: ()=>void
 }
 
-function MyUserEdit ({modalOpen, user, refreshGrid} : MyProps) {
-    const { read, field, model,submit } = useForm(UserModel,{
-        onSubmit: async (usersave)=> {
-                 const id : number | undefined = user.at(0)?.id
-                 if(id) {
-                    await UserService.save(usersave).then((result)=>{
-                    refreshGrid()
-                    modalOpen.value = false
-                })
-                 }
-                else {
-                    await UserService.saveAdd(usersave).then((result)=>{
-                    refreshGrid()
-                    modalOpen.value = false
-                    })
-                }
-              },
-    })
-    const [roles,setRoles] = useState<string[]>([])
-    useEffect(()=>{
-        const fetchData = async() => {
-            const id : number | undefined = user.at(0)?.id
-            if(id) {
-                await UserService.get(id).then(read)
-            }
-            else {
-                await UserService.newUser().then(read)
-            } 
-            await RoleService.roles().then(roles => setRoles(roles))
-        }
-        fetchData()
-    }
-    
-    ,[user])
 
-    return(
-    <Dialog
-        headerTitle={'User Edit'}
-        opened = {modalOpen.value}
-       
-        onClosed={()=>modalOpen.value = false}
-        footer={
-        <HorizontalLayout theme='spacing'>
-            <Button onClick={submit}>Save</Button>
-            <Button onClick={()=>{
-                modalOpen.value=false
-            }}>Cancel</Button>
-        </HorizontalLayout>
-        }
-    >
-        <FormLayout>
-          <TextField {...field(model.username)} label={"Username"}   />
-                  <TextField {...field(model.name)} label={"Name"}   />
-                  <PasswordField {...field(model.hashedPassword)}label={'Password'}  />
-                  <CheckboxGroup {...field(model.roles)}>
-                      {
-                      roles.map((value,index) => (
-                          <Checkbox value={value} key={index} label={value}  />
-                      ))
-                      }
-                  </CheckboxGroup>
-                 
-                 
-          
-        </FormLayout>
-
-    </Dialog>
-    )
-}
 
 export default function UserIndex() {
     const searchTerm = useSignal('')
     const modalOpen = useSignal<boolean>(false)
     const selectedItems = useSignal<User[]>([])
+    const userId = useSignal<number | undefined>()
     const dataProvider = useGridDataProvider(
         async (pageable) => 
             await UserService.listWithFilter(pageable,searchTerm.value)
@@ -113,11 +47,13 @@ export default function UserIndex() {
             const action = event.detail.value.text
             const user = item
             if(action.toLowerCase() === 'edit') {
-                if(selectedItems.value.length !== 0) modalOpen.value=true
-                else {
+                if(selectedItems.value.length === 0) {
+                    modalOpen.value=false
                     Notification.show("User harus dipilih")
+                    return
                 }
-                // navigate(`/user/${item.id}`)
+               userId.value = user.id
+               modalOpen.value=true
             }
             if(action.toLowerCase() === 'delete') {
                 if(confirm('are u sure?')) {
@@ -149,7 +85,7 @@ export default function UserIndex() {
             </TextField>
             <HorizontalLayout theme="spacing">
                 <Button onClick={()=>{
-                selectedItems.value = []
+                userId.value = undefined
                 modalOpen.value=true
                 }} data-tour='add'>Add</Button>
                 <Button onClick={()=>{
@@ -160,14 +96,15 @@ export default function UserIndex() {
 
         <Grid dataProvider={dataProvider} selectedItems={selectedItems.value} onActiveItemChanged={(e) => {
             const user = e.detail.value
-            selectedItems.value = user ? [user] : []
+            selectedItems.value = user? [user] : []
+            userId.value = user?.id ? user.id : undefined
         }}>
             <GridColumn path="username" header={'Username'} />
             <GridColumn path="name" header="Name" />
             <GridColumn key={'action'} renderer={actionRenderer} header='Action'  />
             <span slot="empty-state">No user found.</span>
         </Grid>
-        {selectedItems.value && <MyUserEdit modalOpen={modalOpen} user={selectedItems.value} refreshGrid={refreshGrid} />  }
+        {selectedItems.value && <UserAction modalOpen={modalOpen} userId={userId.value} refreshGrid={refreshGrid} />  }
     </VerticalLayout>
     )
 }
