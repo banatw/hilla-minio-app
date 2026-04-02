@@ -33,22 +33,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @StyleSheet(Lumo.STYLESHEET)
 @StyleSheet(Lumo.UTILITY_STYLESHEET)
 public class Application implements AppShellConfigurator {
-    // @Autowired
-    // private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
     
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    // @Bean
-    // CommandLineRunner commandLineRunner() {
-    //     return x -> {
-    //         User adminUser = new User();
-    //         adminUser.setHashedPassword(new BCryptPasswordEncoder().encode("admin"));
-    //         adminUser.setName("admin");
-    //         adminUser.setUsername("admin");
-    //         adminUser.setRoles(Set.of(Role.ADMIN,Role.USER));
-    //         userRepository.save(adminUser);
-    //     };
-    // }
+    @Bean
+    CommandLineRunner commandLineRunner() {
+        return x -> {
+            User adminUser = new User();
+            adminUser.setHashedPassword(new BCryptPasswordEncoder().encode("admin"));
+            adminUser.setName("admin");
+            adminUser.setUsername("admin");
+            adminUser.setRoles(Set.of(Role.ADMIN,Role.USER));
+            userRepository.save(adminUser);
+        };
+    }
 }
