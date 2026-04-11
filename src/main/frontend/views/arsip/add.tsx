@@ -69,7 +69,8 @@ export default function EmployeeAdd() {
   })
   
   
-
+ const maxFileSizeInMB = 2;
+ const maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
 
 
   return (
@@ -84,6 +85,7 @@ export default function EmployeeAdd() {
         }} />
         <Upload
           disabled = {uploadDisable}
+          maxFileSize={maxFileSizeInBytes}
           className='upload'  
           accept='application/pdf'
           maxFiles={1}
@@ -100,6 +102,9 @@ export default function EmployeeAdd() {
               }
             }
           }
+          onFileReject={(event) => {
+        Notification.show(event.detail.error, { position: 'middle', theme: 'error' });
+      }}
         
         />
         

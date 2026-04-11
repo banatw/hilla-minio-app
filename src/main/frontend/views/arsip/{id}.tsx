@@ -29,9 +29,7 @@ export const config: ViewConfig = {
     rolesAllowed: ['ADMIN']
 }
 
-interface props {
-  base64: Signal<string | undefined>
-}
+
 
 
 export default function EmployeeEdit() {
@@ -63,9 +61,6 @@ export default function EmployeeEdit() {
   },[])
 
 
-  interface props {
-    file : Signal<string | undefined>
-  }
   
    
 
@@ -82,6 +77,8 @@ export default function EmployeeEdit() {
   // function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
   //   setNumPages(numPages);
   // }
+  const maxFileSizeInMB = 2;
+ const maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
   return (
     <FormLayout style={{width: '100%'}} theme='spacing'>
          <TextField {...form.field(form.model.name)} label={'Name'} className='keterangan' onValueChanged={(e)=>{
@@ -96,6 +93,7 @@ export default function EmployeeEdit() {
             disabled = {uploadDisable}
             className='upload'    
             maxFiles={1}
+            maxFileSize={maxFileSizeInBytes}
             accept='application/pdf'
             onUploadBefore={async (e: UploadBeforeEvent) =>  {
               const file = e.detail.file
@@ -107,15 +105,17 @@ export default function EmployeeEdit() {
                 filePrev.value = form.value.file
               }
             }}
-        
+            onFileReject={(event) => {
+        Notification.show(event.detail.error, { position: 'middle', theme: 'error' });
+      }}
         />
        
         <HorizontalLayout theme='spacing'>
-                 {
-                   filePrev.value && (
+                 {/* {
+                   filePrev.value && ( */}
                      <Button onClick={()=>OpenOnNewTab(filePrev)}>Buka di Tab Baru</Button>
-                   ) 
-                 }
+                   {/* ) 
+                 } */}
                  <Button onClick={form.submit} className='simpan'>Simpan</Button>
                </HorizontalLayout>
          <iframe src={filePrev.value} width={'300px'} height={'300px'} className='preview'></iframe>
