@@ -2,7 +2,7 @@ import { useTour } from "@reactour/tour"
 import { ViewConfig } from "@vaadin/hilla-file-router/types.js"
 import { useForm } from "@vaadin/hilla-react-form"
 import { Signal, useSignal } from "@vaadin/hilla-react-signals"
-import { Button, Dialog, FormLayout, Notification, TextField, Upload, UploadBeforeEvent, UploadElement } from "@vaadin/react-components"
+import { Button, Dialog, FormLayout, HorizontalLayout, Notification, TextField, Upload, UploadBeforeEvent, UploadElement, VerticalLayout } from "@vaadin/react-components"
 import UserModel from "Frontend/generated/com/example/application/data/UserModel"
 import { ProfileService, UploadServices, UserEndpoint, UserService } from "Frontend/generated/endpoints"
 import { menuSteps } from "Frontend/steps"
@@ -11,12 +11,13 @@ import { readAsDataURL } from "promise-file-reader"
 import React from "react"
 import { useEffect, useState } from "react"
 import { Cropper, CropperRef } from "react-advanced-cropper"
+import { CropperModal } from "./CropperModal"
+import "react-advanced-cropper/dist/style.css";
+import { FormControlLabel, Switch } from "@mui/material"
 // import { Cropper, CropperRef } from "react-advanced-cropper"
 // import { useParams } from "react-router"
-import "react-advanced-cropper/dist/style.css";
+
 // import "./Cropper.scss";
-import "./tes.css"
-import { BlobOptions } from "node:buffer"
 
 
 export const config: ViewConfig = {
@@ -29,60 +30,20 @@ export const config: ViewConfig = {
 
 //Modal
 
-interface ChildProps {
-  modalOpen: Signal<boolean>
-  image: Signal<string | undefined>
-  imageResult : Signal<string | undefined>
-  // cropHasDone : Signal<boolean>
-}
 
-const CropperModal = ({ modalOpen ,image, imageResult } : ChildProps)=>{
-  const cropperRef = React.useRef<CropperRef>(null);
-
-  const onCrop = () => {
-    const cropper = cropperRef.current;
-    if (cropper) {
-      const canvas = cropper.getCanvas();
-      if (canvas) {
-        imageResult.value = canvas.toDataURL()
-        // cropHasDone.value=true
-        modalOpen.value=false
-      }
-    }
-  };
-  return(
-    <Dialog
-  headerTitle="New employee"
-  opened={modalOpen.value}
-  onClosed={() => {
-    modalOpen.value = false
-  }}
-  footer={
-    <>
-      <Button
-        onClick={() => {
-          onCrop()
-        }}
-      >
-        Crop
-      </Button>
-      <Button
-        onClick={() => {
-          modalOpen.value=false
-        }}
-      >
-        Cancel
-      </Button>
-      
-    </>
-  }
->
- <Cropper src={image.value} ref={cropperRef} />
-
-</Dialog>
-  )
-}
 export default function UserProfile() {
+     const image = useSignal<string | undefined>(undefined)
+     const imageResult = useSignal<string | undefined>(undefined)
+     const modalOpen = useSignal<boolean>(false)
+     const isDark = useSignal<boolean>(false)
+
+     const saveTheme = ()=>{
+      localStorage.removeItem('theme')
+      localStorage.setItem('theme','dark')
+     }
+
+     
+
     const  form  = useForm(UserModel,{
       onSubmit: async (user) => {
         if(imageResult.value) {
@@ -91,13 +52,7 @@ export default function UserProfile() {
         await ProfileService.saveEditWithPicture(user).then((user) => Notification.show(`user ${user.name} berhasil disimpan`))
       }
         
-      
     })
-
-   const uploadRef = React.useRef<UploadElement>(null);
-  //  const cropHasDone = useSignal<boolean>(false)
-
-  
 
    useEffect(()=>{
     const fetchData = async ()=>{
@@ -105,30 +60,18 @@ export default function UserProfile() {
             form.read(result)
             image.value = result?.profilePictureUriData
             if(result?.hasProfilePicture) imageResult.value = result.profilePictureUriData
+            const theme = localStorage.getItem('theme')
+            if(theme) {
+              if(theme === 'dark') isDark.value = true
+            }
         })
       }
     
     fetchData()  
     },[])
 
-     const image = useSignal<string | undefined>(undefined)
-     const imageResult = useSignal<string | undefined>(undefined)
-     const modalOpen = useSignal<boolean>(false)
-
      
-    
-    // const cropperRef = React.useRef<CropperRef>(null);
-
-    // const onCrop = () => {
-    //   const cropper = cropperRef.current
-    //   if(cropper) {
-    //     const canvas = cropper.getCanvas()
-    //     // console.log(canvas?.toDataURL())
-    //     if(canvas?.toDataURL)
-    //       form.value.profilePictureUriData = canvas?.toDataURL()
-    //   }
-    // }
-
+     
     const removeUpload = ()=> {
       form.value.profilePictureMimeType=''
       form.value.hasProfilePicture=false
@@ -136,11 +79,10 @@ export default function UserProfile() {
       imageResult.value = undefined
     }
   return (
-    <FormLayout theme="spacing">
+    <VerticalLayout>
         <TextField {...form.field(form.model.username)} label={'Username'} readonly/>
         <TextField {...form.field(form.model.name)} label={'Name'} />
           <Upload
-            ref={uploadRef}
             maxFiles={1}
             accept='image/*'
             onUploadBefore={async (e: UploadBeforeEvent) =>  {
@@ -172,10 +114,9 @@ export default function UserProfile() {
             height="200"
           />
         </div>
-        
         <CropperModal modalOpen={modalOpen} image={image} imageResult={imageResult}   />
         <Button onClick={form.submit} disabled={form.submitting}>Simpan</Button>
-    </FormLayout>
+    </VerticalLayout>
   )
 }
 

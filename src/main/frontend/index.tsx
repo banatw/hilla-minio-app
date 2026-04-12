@@ -5,14 +5,8 @@ import { createElement, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, useNavigate, useNavigation, useRoutes } from 'react-router';
 
-
-
-
 function App() {
   
-
-  
-
   return (
     <AuthProvider>
         <TourProvider steps={[]} showBadge={false} >

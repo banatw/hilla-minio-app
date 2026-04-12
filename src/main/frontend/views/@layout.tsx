@@ -7,6 +7,8 @@ import { ArsipSteps, menuSteps } from 'Frontend/steps';
 import { useAuth } from 'Frontend/util/auth.js';
 import React, { Suspense, useEffect, useState } from 'react';
 import { data, Link, Outlet, useLocation, useNavigate } from 'react-router';
+import { FormControlLabel, Switch } from '@mui/material';
+import { getTheme, removeTheme, saveTheme, toggleTheme } from 'Frontend/ToggleTheme';
 
 
 const documentTitleSignal = signal('');
@@ -23,8 +25,20 @@ export default function MainLayout() {
   const location = useLocation();
   const {setIsOpen, setSteps, setCurrentStep}  = useTour()
 
+  const checked = useSignal<boolean>(false)
+
   useEffect(()=>{
     if(setSteps) setSteps(menuSteps)
+  },[])
+
+  useEffect(()=>{
+    const theme : string | undefined = getTheme()
+    if(theme) {
+      if(theme === 'dark') {
+        checked.value = true
+        toggleTheme(theme)
+      }
+    }
   },[])
   
   const contextMenuItems = [
@@ -44,7 +58,19 @@ export default function MainLayout() {
     }
   }, [currentTitle]);
 
- 
+ function changeHandler(e : React.ChangeEvent<HTMLInputElement>) {
+    const _checked = e.target.checked
+    if(_checked) {
+      checked.value = true
+      toggleTheme('dark')
+      saveTheme()
+    }
+    else {
+      checked.value = false
+      toggleTheme('light')
+      removeTheme()
+    }
+ }
 
   return (
     <AppLayout primarySection="drawer">
@@ -80,6 +106,7 @@ export default function MainLayout() {
                 <div className="flex items-center gap-s centextmenu">
                     <Avatar theme="xsmall"  img={state.user.profilePictureUriData}  name={state.user.name} id='profile'  />
                       {state.user.name}
+                      <FormControlLabel label="Dark Mode" control={<Switch checked={checked.value}  onChange={changeHandler} />} />
                 </div>
               </ContextMenu>
               

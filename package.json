@@ -3,6 +3,9 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^9.0.0",
     "@reactour/tour": "^3.8.0",
     "@vaadin/aura": "25.0.4",
     "@vaadin/common-frontend": "0.0.22",
@@ -118,7 +121,7 @@
       "vite-plugin-checker": "0.12.0",
       "workbox-build": "7.4.0"
     },
-    "hash": "0bcdbdbf283192122e1dea0282a267d1a9999962b4b6858475390e17d259c7a2"
+    "hash": "419d18295564f6f1094e8a3eb0c3f6b260808300515b1c26ef77ee8bd6b11aa6"
   },
   "overrides": {
     "@vaadin/vaadin-development-mode-detector": "$@vaadin/vaadin-development-mode-detector",
@@ -212,6 +215,9 @@
     "@vaadin/rich-text-editor": "25.0.4",
     "promise-file-reader": "$promise-file-reader",
     "@reactour/tour": "$@reactour/tour",
-    "react-advanced-cropper": "$react-advanced-cropper"
+    "react-advanced-cropper": "$react-advanced-cropper",
+    "@emotion/react": "$@emotion/react",
+    "@emotion/styled": "$@emotion/styled",
+    "@mui/material": "$@mui/material"
   }
 }

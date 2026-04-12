@@ -2,6 +2,7 @@ import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import { LoginI18n, LoginOverlay, LoginOverlayElement } from '@vaadin/react-components';
 import { useAuth } from 'Frontend/util/auth.js';
+import { useEffect } from 'react';
 
 export const config: ViewConfig = {
   menu: { exclude: true },
@@ -16,6 +17,8 @@ const loginI18n: LoginI18n = {
 export default function LoginView() {
   const { login } = useAuth();
   const loginError = useSignal(false);
+
+  
 
   return (
     <LoginOverlay
