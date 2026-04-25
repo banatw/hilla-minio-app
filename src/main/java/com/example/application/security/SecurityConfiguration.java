@@ -29,9 +29,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
 public class SecurityConfiguration {
 
-    @Value("${my.app.auth.secret}")
-    private String authSecret;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -49,17 +46,6 @@ public class SecurityConfiguration {
             vaadin.loginView("/login");
         });
 
-        http.sessionManagement(sessionManagement -> sessionManagement
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        // Enable stateless authentication
-        http.with(new VaadinStatelessSecurityConfigurer<>(),
-                cfg -> cfg.withSecretKey()
-                        .secretKey(new SecretKeySpec(
-                                Base64.getDecoder().decode(authSecret), 
-                                JWSAlgorithm.HS256.toString()) 
-                        ).and().issuer("com.example.application") 
-        );
 
         return http.build();
     }
